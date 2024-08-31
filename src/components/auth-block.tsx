@@ -1,12 +1,19 @@
-import { auth } from "@/auth";
-import { Avatar, Button, NavbarItem, Popover, PopoverContent, PopoverTrigger } from "@nextui-org/react";
+"use client";
+import { Avatar, Button, NavbarItem, Popover, PopoverContent, PopoverTrigger, Spinner } from "@nextui-org/react";
 import * as actions from "@/actions";
-export default async function AuthBlock() {
-    const session = await auth();
-    return session?.user ? (
+import { useSession } from "next-auth/react";
+export default function AuthBlock() {
+    const session = useSession();
+    const user = session.data?.user;
+
+    if (session.status === "loading") {
+        return <Spinner />;
+    }
+
+    return user ? (
         <Popover placement='left'>
             <PopoverTrigger>
-                <Avatar src={session.user.image || ""} />
+                <Avatar src={user.image || ""} />
             </PopoverTrigger>
             <PopoverContent>
                 <div className='p-4'>
