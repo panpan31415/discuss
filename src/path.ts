@@ -2,7 +2,7 @@ const paths = {
     home: () => {
         return "/";
     },
-    topics: (slug: string) => {
+    topic: (slug: string) => {
         return `/topics/${slug}`;
     },
     createTopic: (slug: string) => {

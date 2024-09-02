@@ -1,6 +1,11 @@
 "use server";
 
 import { auth } from "@/auth";
+import paths from "@/path";
+import { Topic } from "@prisma/client";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import slugify from "slugify";
 import { z } from "zod";
 
 const createTopicSchema = z.object({
@@ -29,7 +34,6 @@ export async function createTopic(formState: FormState, formData: FormData): Pro
         return { errors: result.error.flatten().fieldErrors };
     }
     const { name, description } = result.data;
-    console.log(name, description);
     const session = await auth();
     if (!session?.user) {
         return {
@@ -38,9 +42,29 @@ export async function createTopic(formState: FormState, formData: FormData): Pro
             },
         };
     }
-    // insert db
-    return {
-        succeeded: true,
-    };
-    // TODO: revalidate the homepage
+    let topic: Topic | undefined;
+    try {
+        topic = await prisma?.topic.create({
+            data: {
+                slug: slugify(name),
+                description,
+            },
+        });
+    } catch (error) {
+        if (error instanceof Error) {
+            return {
+                errors: {
+                    _form: [error.message],
+                },
+            };
+        } else {
+            return {
+                errors: {
+                    _form: ["failed while saving topic"],
+                },
+            };
+        }
+    }
+    revalidatePath(paths.home());
+    redirect(paths.topic(topic?.slug || ""));
 }
