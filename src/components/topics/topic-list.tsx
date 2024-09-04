@@ -1,6 +1,7 @@
 import paths from "@/path";
 import { Chip } from "@nextui-org/react";
 import Link from "next/link";
+import prisma from "@/db";
 
 export default async function TopicList() {
     const topics = await prisma?.topic.findMany();

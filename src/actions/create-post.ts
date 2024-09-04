@@ -81,7 +81,7 @@ export async function createPost(slug: string, formState: FormState, formData: F
     redirect(
         paths.showPost({
             topicSlug: slug,
-            postId: parseInt(post?.id || "0"),
+            postId: post?.id || "",
         }),
     );
 }

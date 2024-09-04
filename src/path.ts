@@ -11,7 +11,7 @@ const paths = {
     createPost: (slug: string) => {
         return `/topics/${slug}/posts/new`;
     },
-    showPost: ({ topicSlug, postId }: { topicSlug: string; postId: number }) => {
+    showPost: ({ topicSlug, postId }: { topicSlug: string; postId: string }) => {
         return `/topics/${topicSlug}/posts/${postId}`;
     },
 };
